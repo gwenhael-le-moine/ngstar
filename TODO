@@ -1,0 +1,8 @@
+BUGS :
+- score not good (often displayed as -1...)
+- Please report to cycojesus__¬AT¬__yahoo__¬DOT¬__fr if you find one
+
+FEATURES :
+- check availability of ncurses and/or fltk2 in ./configure
+? accept any filename for levels (load the name in a linked list maybe)
+- internationalization 

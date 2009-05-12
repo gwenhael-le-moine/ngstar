@@ -1,0 +1,423 @@
+2007-11-12 : toward version 2.1.9
+	- src/main.cc : cleaned up #if defined ()
+
+2006-11-07 : toward version 2.1.9
+	- src/Makefile : don't complain if symlinks already exist, kill'em.
+	- src/Board.* : clean-up, tweaking, etc.
+
+2006-10-02 : toward version 2.1.9
+	- disabled making target 'archive_bin_static' in target 'archive'. It
+	ends up in error, I don't know why and it breaks target 'archive'.
+	- bumped up version number in Slackware/ngstar.SlackBuild
+	- updated copyright notices.
+
+2006-05-23 : toward version 2.1.9
+	- Fixed compilation with fltk-2.0.x > r5132
+
+2006-02-05 : toward version 2.1.8
+	- Ncurses_UI : added option to use 'black & white' display :
+	  in ~/.ngstar/config :
+		black_and_white = 0 or 1 (false or true)
+	  command-line argument -b --black-and-white
+	- Ncurses_UI : display the board before displaying score or
+	  levelset end's message
+
+2006-01-03 : toward version 2.1.8
+	- small optimizations in drawing methods
+
+2005-11-15 : toward version 2.1.8
+	- Ncurses_UI : nice looking panel at the end of a level to display score.
+	- Ncurses_UI : nice looking panel at the end of a levelset to summurize.
+
+2005-11-13 : toward version 2.1.8
+	- Board.hh : Began to implement something to make a transition
+	between levels as well as to inform the player of her
+	score. Problem getting it to be displayed... :/
+	- Makefile : make dynamic binaries archive before static binaries
+	one.
+	- Board.cc : typo in load_textures()
+
+2005-10-28 : toward version 2.1.7
+	- Changed FSF address.
+	- compilation output looks prettier (inspired by fltk2 makefile ;) )
+
+2005-10-22 : toward version 2.1.7
+	- Fixed bug in Fltk2_UI.cc : controls weren't refreshed when
+	changing level using vi_levels.
+
+2005-10-10 : toward version 2.1.7
+	- Rearranged controls, level indicator, output of number of moves
+	and gifts don't change but are relocated in the second
+	line. Others controls are re-implemented in a menu, 'Exit' and
+	'Restart level' are under the File menu entry, levelsets and
+	themes' lists become menu entries too, and a 'Help' entry is added
+	with sub-entries 'License' and 'About'.
+	- Added an 'Show scores' entry under the 'File' menu to display
+	current levelset's scores.
+	- LevelMaker_UI : removed 'Help'->'Help' entry, useless, you'd
+	better read the README file.
+	- strip binary
+
+2005-10-06 : toward version 2.1.6
+	- made headers and static & shared libraries installation optional
+	- added --install-dev switch to ./configure (default: no) (see above)
+	- added --enable-debug switch to ./configure (default: no)
+	- added --enable-static switch to ./configure (default: no)
+	- modified 'make archive' to build separate archives for static
+	and dynamic binaries archive.
+	- during compilation use static library by default.
+	- shared library is not built unless ./configure is called
+	with --install-dev switch
+	- modified Slackware/ngstar.SlackBuild to avoid messing up with
+	ownership and permissions in doinst.sh. Do that when building
+	packages so that if there's some problem only the packager's
+	system is messed up, the end-user should get a clean, *working*
+	package. (Big thanks to the qemu (http://www.qemu.org) programmers
+	for saving my system ;))
+	- typos and corrections in README
+	
+2005-10-02 : toward version 2.1.6
+	- Cleaned {src,libngstar2}/Makefiles by letting implicit rules do
+	their job.
+	- moved ngstar.SlackBuild into its own Slackware directory to tidy
+	up.
+
+2005-09-20 : toward version 2.1.5
+	- removed compilation.conf, included in ./configure
+	- added tooltips on radio buttons in editor
+	- cosmetic changes in showing license in editor
+	- changed ngstar2 occurences to ngstar in README
+	- set default CFLAGS according to default values in ./configure so
+	when it's called without arguments everything is ready to compile.
+	- reformatted --help message in ./configure
+	- added --{with,without}-{fltk2,ncurses} options to ./configure
+	- by default if you disable fltk2 in ./configure editor is not
+	built unless you ask for it explicitly with --enable-editor
+	- typo in ./configure --help
+	- typo in src/Fltk2_UI.cc
+	
+2005-09-18 : toward version 2.1.5
+	- configure script now print what has been configured
+	- typo in configure
+	- adjust permissions when installing
+	- set the right ownership & strip binaries in ngstar.SlackBuild
+
+2005-08-30 : toward version 2.1.5
+	- changed score calculus : nbMoves*100 + nbSeconds. The _lower_
+	the better.
+
+2005-08-20 : version 2.1.4
+	- added a Slackware's package creation script : ngstar.SlackBuild
+	USAGE : Be sure to have in the same directory
+	ngstar-<version>-src.tar.bz2 and ngstar.SlackBuild , then edit 
+	ngstar.SlackBuild to edit VERSION=<version>. Then, as root, execute the
+	script. The created package is created in /tmp/
+	- new method EditorBoard::clear(  ) that LevelMaker_UI calls instead
+	of doing the job itself. Thus harcoded char values of cells are in less
+	files
+	- #define's for cells' char values in libngstar2/tools.hh	
+	- compilation.conf : fixed application name (ngstar instead of ngstar2)
+	- tools.cc : count_file_in_dir skipfiles which filenames ends with ~
+	
+2005-08-13 : version 2.1.3
+	- fixed a typo in Exceptions.hh to print the strings and not their
+	address in memory
+	
+2005-08-11 : version 2.1.2
+	- Scores almost finished, just need to find a good way to compute
+	score from nb_moves & duration to complete level.
+	- got rid of all those Cish malloc()s
+	- now fltk2 gui & level editor windows are resizable
+
+2005-08-10 : version 2.1.1
+	- moved levelsets & themes in datas dir
+	- now EditorBoard inherit from Board
+	- you now can create levelsets from the level editor. They're created
+	  as $HOME/.ngstar/levelsets/<new_levelset> so you must have a valid
+	  $HOME/.ngstar before.
+	- building leveleditor don't depend on building fltk2 gui
+	
+2005-08-09 : version 2.1.0
+	- release time
+
+2005-08-08 : version 2.1.0-RC1
+	- LevelMaker fully functionnal
+	- added NGStar2::load_level( const char *filename ) for LevelMaker
+	- merged LevelMaker in the all-in-one binary ( => src/ ).
+	Run ngstar-editor(_static) to use it.
+
+2005-08-07 : version 2.0.0-RC2
+	- fine-tuned mouse click position 
+
+2005-08-05 : version 2.0.0-RC2
+	- libngstar2/NGStar2.hh : made set_cell() public for the level editor
+	- began working on level editor (LevelMaker)
+	- fixed a nasty bug in fltk2 gui that made it segfault when the window
+	lost focus then got it again
+
+2005-08-05 : version 2.0.0-RC1
+	- use $HOME/.ngstar instead of $HOME/.ngstar2 to be compatible with
+	NGStar(1).
+	- release time :)
+
+2005-08-03/04 : version 2.0.0-RC1 or How can a sleepless night in the heat of
+		Hanoï can greatly improve your productivity (assuming you have
+		near nothing left to read and foreign language bookshops are
+		next to none in the town, you've watched all your DVDs, only
+		programming save you from boredom)
+	- ncurses gui : moved main loop into Ncurses_UI::run()
+	- moved the two GUIs into one binary. Which one is showed is
+	determined at runtime by looking at the name of the command (argv[0]).
+	The test look for either "fltk" or "x" or "X" in the name to determine
+	if the fltk2 gui is to be runned. If neither is found then if compiled
+	in it run the ncurses gui.
+	- Themes and levelsets are searched in $PREFIX/share/ngstar2/ and
+	$HOME/.ngstar/ and ./ . In fltk2 gui all themes and levelsets found in
+	these three places are put in the corresponding ComboBox.
+	- updated README
+	- added destructor to NGStar2 to free NGStar2::board
+	- fixed fltk2 gui static compilation (at least it works for me)
+	- items in Fltk2_UI::l_* are now unique. Beware that if differents
+	levelsets/themes have the same name only one will be available and that
+	will be the first found in (in order) default/config path, then
+	$HOME/.ngstar/* and finally ./ . It means that if you make your own
+	theme in $HOME/.ngstar/themes/ and give it the same name that one in
+	in $PREFIX/share/ngstar2/themes then yours won't be available (same for
+	levelsets).
+	- Fltk2_UI::l_levelsets & Fltk2_UI::l_themes properly showing current
+	value.
+	- Board & Fltk2_UI : fixed late refresh controls.
+	- fixed a bug in Configuration::set_theme : wouldn't set themes_path
+	to the new found value.
+	- if $HOME/.ngstar don't exist Configuration no longer try to create a
+	default one (code is buggy and this behaviour is a bit too intrusive
+	anyway). Thus, $HOME/.ngstar become optional.
+	- added the option -c / --create-default-config. When called it will
+	create a $HOME/.ngstar/ with default values in config, empty
+	levelsets/ (and empty themes/ if fltk2 gui was compiled).
+	- fltk2 gui now handled ngstar2 exceptions.
+	- disabled making ngstar2.fltk2_static since it's broken.
+	- fixed bug in NGStar2::read_*_level. now it throw an exception if
+	the level file is shorter than expected.
+	- I don't remember exactly when I did it but make install now use a
+	DESTDIR variable.
+	- fixed a typo in configure causing Makefile.config to grow over and
+	over.
+	- fixed DESTDIR / PREFIX / prefix so make install works
+	- Board.cc : redraw the board before showing the end-of-levelset
+	message.
+	- fixed a typo in libngstar2/Makefile that made make static fail if
+	make clean was called just before
+	- replaced {Configuration,NGStar2}::DEBUG_* by overloading operator<<
+	- fixed bug in Configuration : always started at level 1
+
+2005-08-02 : version 0.4.0
+	- fltk2 gui finished, now time to debug it
+	- added or updated GPL notice on sources
+
+2005-07-31 : version 0.3.0
+	- working on fltk2 gui
+
+2005-07-29 : version 0.2.0
+	- worked on ncurses gui, considering it finished by now
+
+2005-07-28 : version 0.1.2
+	- exceptions overload << operator to self what they are
+
+2005-07-27 : version 0.1.2
+	- moved all logic to libngstar2, now GUIs do only what they should
+	that handle the interaction with the player
+
+2005-07-23 : version 0.1.1
+	- solved int to string conversion issue
+	- fixed bug in NGStar2::read_gsl_level & NGStar2::read_level
+	- ncurses gui converted to libngstar2
+
+2005-07-22 : version 0.1.1
+	- started converting ncurses gui to libngstar2
+
+2005-07-21 : version 0.1.0
+	- fixed Makefile so themes are not installed if fltk2 is disabled
+	- code make-up in libngstar2
+
+2005-07-20 : NGStar2 version 0.1.0
+	- started a separate project for NGStar2 including fltk2 gui and
+	rewriting libngstar into C++
+	- NGStar(1) is left as this and release as version 1.4.0
+	- moved Configuration and (in the future) Scores to libngstar
+
+*******************************************************************************
+
+2005-07-21 : version 1.3.5-beta3
+	- fltk2 gui transferred to new project NGStar2
+	- fixed Makefile so it don't install themes when fltk GUI is not built
+
+2005-07-07 : version 1.3.5-beta3
+	- cleaned-up some code
+
+2005-04-25 : version 1.3.5-beta2
+	- make archive now run ./configure --enable-fltk --enable-ncurses before
+	  building.
+
+2005-02-26 : version 1.3.5beta1
+	- Added a "so-called" configure script. See ./configure --help for
+	  more informations.
+
+2005-02-17 : version 1.3.5beta1
+	- Added USE_FLTK & USE_NCURSES in Makefile.config so you can choose
+	  what to build (see comments in Makefile.config)
+	- Makefiles works as exepected
+	- fixed ncurses_static compilation
+
+2005-02-16 : version 1.3.5beta1
+	- "Modularizing" Makefile(s) : now each subdirectory has its own
+	  Makefile and the "main" Makefile just call them.
+	  /!\ ncurses_static target broken /!\
+
+2005-02-11 : version 1.3.4.1
+	- Modified Makefile to produce two kind of archive : with and without
+	  binaries.
+	- BUG : Configuration.hh didn't found ngstar.h
+
+2005-02-10 : version 1.3.4
+	- Release often they say, so maybe it's time for 1.3.4 so here it is ;)
+	- made ngstar_count_files_in_dir( const char* ) available in ngstar.h
+	- BUG : throwed an exception if themes/levelsets directory existed
+	        but was empty.
+
+2005-01-25 : version 1.3.4beta7
+	- began scores calculation & storing ( GUIs/common/Scores.* )
+
+2005-01-19 : version 1.3.4beta6
+	- small cosmetic changes
+
+2005-01-18 : version 1.3.4beta6
+	- added time-to-complete-level computation in ncurses GUI
+
+2005-01-08 : version 1.3.4beta6
+	- ncurses GUI now *really* uses configuration file.
+	- BUG : wouldn't exit ncurses GUI when last level was finished.
+
+2005-01-05 : version 1.3.4beta6
+	- functional C++ification of ncurses GUI. It now uses the same
+	  configuration file as fltk GUI ($HOME/.ngstar/config)
+
+2005-01-03 : version 1.3.4beta5
+	- BUG : ncurses GUI, number of moves wasn't initialized on level
+	        restart
+	- added GPL notice in GUIs/common/Configuration.*
+	- small cosmetic changes
+	- unified Changelog's dates format
+
+2005-01-02 : version 1.3.4beta5
+	- began translation of ncurses GUI in C++ so it can share more code
+	  with fltk GUI (see GUIs/common/* )
+
+2004-12-16 : version 1.3.4beta5
+	- changed libngstar/ngstar.h in a more C++ compliant way.
+	- move Configuration class from GUIs/fltk to GUIs/common
+	- moved some #define into GUIs/common/config.h
+
+2004-12-11 : version 1.3.4beta4
+	- added time-to-complete-level computation in fltk GUI
+
+2004-12-06 : version 1.3.4beta4
+	- automatically create subdirectories levelsets & themes under
+	  $HOME/.ngstar
+	- clean-up code in libngstar
+	- added ngstar_check_dir_existence() into libngstar
+
+2004-12-05 : version 1.3.4beta4
+	- BUG : didn't look in ./levelsets when openining a level
+	- look for themes & levelsets in $HOME/.ngstar/{themes,levelsets}
+
+2004-12-04 : version 1.3.4beta3
+	- Added 'static' to Makefile to compile statically linked binaries.
+
+2004-12-02 : version 1.3.4beta2
+	- new class Configuration to handle configuration file & commandline
+	  parameters
+	- configuration file in $HOME/.ngstar/config :
+		LevelSetsPath = <path to levelsets>
+		ThemesPath = <path to themes>
+		LevelSet = <name of levelset>
+		Theme = <name of theme>
+	  if ngstar can't find it it will create one with default values.
+
+2004-12-02 : version 1.3.4beta1
+	- README fixs (even this one get bugfixes !)
+	- fallback to current directory if themes & levelsets are not found
+	  in PREFIX thus allowing user to test before install.
+	  (thanks Denilson F. de Sá)
+	- fixed a typo in libngstar/ngstar.h
+
+2004-11-27 : version 1.3.3
+	- better arguments parsing
+
+2004-11-25 : version 1.3.3
+	- Exterminated a nasty bug introduced on 2004-11-04 in ngstar_set_levelset (libngstar)
+
+2004-11-24 : version 1.3.3
+	- added moves counting to Ncurses GUI
+	- dropped GLUT GUI
+
+2004-11-23 : version 1.3.3
+	- corrected Makefile bugs
+
+2004-11-04 : version 1.3.2
+	- cleanup char* handling
+
+2004-09-28 : version 1.3.2
+	- new theme cyco001
+
+2004-09-21 : version 1.3.1
+	- corrected tarballs paths, now it detar in NGStar instead of
+	  home/cycojesus/...
+	- default PREFIX to /usr/local/instead of /usr/local/stow/...
+	- default GUI to FLTK, GLUT and NCurses made optional :
+		make <glut/ncurses>
+		make <glut/ncurses>_install
+		make <glut/ncurses>_uninstall
+		make <glut/ncurses>_clean
+		make <glut/ncurses>_real-clean
+	- Added a section in README about theme design
+	- levels & themes now install in $PREFIX/share/ngstar/ instead of
+	  $PREFIX/share/ngstar-<version>/
+
+2004-09-20 : version 1.3.0
+	- added possibility to play using the mouse in FLTK GUI
+
+2004-08-04 : version 1.2.0
+	- resolved compilation problem between libngstar.so and FLTK GUI
+	- integrate FLTK GUI
+
+2004-01-25 : version 1.0.0
+	- clean-up in directory architecture of sources
+
+2004-01-16 : version 0.1.1
+	- cosmetic in Makefile
+
+2003-12-30 : version 0.1.1
+	- small bug : didn't selected the ball when restarting a level
+
+2003-10-20 : version 0.1.0
+	- cosmetics in Ncurses GUI
+
+2003-10-19 : version 0.1.0
+	- new Ncurses GUI that I think justify the version number's jump :D
+	- big Makefile clean-up
+
+2003-10-17 : version 0.0.5
+	- moved levelset handling from glut_gui to ngstar_engine
+
+2003-10-16 : version 0.0.4
+	- moved ngstar_engine to an external librairy (libngstar.so)
+	- program end nicely (not on error) when you finish all levels of a levelset
+	- wrote a small description of the API in 'ngstar-API'
+
+2003-10-15 : version 0.0.4
+	- upper limit for levels
+
+2003-09-13 : version 0.0.3
+	- not yet released because of procrastination
+	- added 'n' and 'p' keys to go to next and previous level

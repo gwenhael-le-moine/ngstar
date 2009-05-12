@@ -1,0 +1,47 @@
+include ../Makefile.config
+
+TOOLS_OBJ = tools.o
+NGSTAR2_OBJ = NGStar2.o
+CONFIGURATION_OBJ = Configuration.o
+SCORES_OBJ = Scores.o
+NGSTAR_LIBNGSTAR2_INCLUDE = Configuration.hh  Exceptions.hh  NGStar2.hh  Scores.hh  tools.hh
+NGSTAR_SHARED_LIB = ../libngstar2.so
+NGSTAR_STATIC_LIB = ../libngstar2.a
+
+all :
+	$(MAKE) $(NGSTAR_STATIC_LIB)
+ifdef INSTALL_DEV
+	$(MAKE) $(NGSTAR_SHARED_LIB)
+
+$(NGSTAR_SHARED_LIB) : $(NGSTAR2_OBJ) $(CONFIGURATION_OBJ) $(TOOLS_OBJ) $(SCORES_OBJ) $(NGSTAR_LIBNGSTAR2_INCLUDE)
+	$(CXX) -shared -Wl -o $@ $(CPPFLAGS) $(NGSTAR2_OBJ) $(CONFIGURATION_OBJ) $(TOOLS_OBJ) $(SCORES_OBJ)
+endif
+
+static :
+	$(MAKE) all
+
+$(NGSTAR_STATIC_LIB) : $(NGSTAR2_OBJ) $(CONFIGURATION_OBJ) $(TOOLS_OBJ) $(SCORES_OBJ) $(NGSTAR_LIBNGSTAR2_INCLUDE)
+	$(AR) $@ $(NGSTAR2_OBJ) $(CONFIGURATION_OBJ) $(TOOLS_OBJ) $(SCORES_OBJ)
+
+clean :
+	-rm -f *~ *.o
+
+real-clean :
+	$(MAKE) clean
+	-rm -f $(NGSTAR_STATIC_LIB)
+ifdef INSTALL_DEV
+	-rm -f $(NGSTAR_SHARED_LIB)
+
+install: $(NGSTAR_SHARED_LIB) $(NGSTAR_LIBNGSTAR2_INCLUDE)
+	mkdir -p $(LIB_DIR)
+	$(INSTALL) $(NGSTAR_SHARED_LIB) $(LIB_DIR)/
+	$(INSTALL) $(NGSTAR_STATIC_LIB) $(LIB_DIR)/
+	mkdir -p $(INCLUDES_DIR)
+	$(INSTALL) $(NGSTAR_LIBNGSTAR2_INCLUDE) $(INCLUDES_DIR)/
+	for i in $(NGSTAR_LIBNGSTAR2_INCLUDE) ; do chmod 0644 $(INCLUDES_DIR)/$$i ; done
+
+uninstall:
+	-rm -f $(LIB_DIR)/$(NGSTAR_SHARED_LIB)
+	-rm -f $(LIB_DIR)/$(NGSTAR_STATIC_LIB)
+	-rm -f $(INCLUDES_DIR)/$(NGSTAR_LIBNGSTAR2_INCLUDE)
+endif

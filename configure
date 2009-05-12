@@ -1,0 +1,213 @@
+#!/bin/sh
+
+VMAJOR=2
+VMINOR=1
+VREVISION=9
+
+USER_CONF=Makefile.config
+
+prefix=/usr/local
+
+# default values
+BUILD_EDITOR="BUILD_EDITOR = 1"
+USE_FLTK2="USE_FLTK2 = 1"
+USE_NCURSES="USE_NCURSES = 1"
+INSTALL_DEV="#INSTALL_DEV is not set"
+CPPFLAGS_FLTK2="CPPFLAGS += -D '_USE_FLTK2_ = 1' "
+CPPFLAGS_NCURSES="CPPFLAGS += -D '_USE_NCURSES_ = 1' "
+CPPFLAGS_EDITOR="CPPFLAGS += -D '_BUILD_EDITOR_ = 1' "
+GCC_OPTIONS=""
+STATIC="#STATIC is not set"
+
+DEBUG="no"
+PROFILING="no"
+
+
+# commandline arguments processing
+while [ "x$1" != "x"  ]
+do
+  case "$1" in
+      --prefix )
+          shift
+          prefix=$1
+          shift
+          ;;
+      --enable-fltk2 | --with-fltk2 )
+	  USE_FLTK2="USE_FLTK2 = 1"
+	  CPPFLAGS_FLTK2="CPPFLAGS += -D '_USE_FLTK2_ = 1' " 
+          shift
+          ;;
+      --disable-fltk2 | --without-fltk2 )
+	  USE_FLTK2="#USE_FLTK2 is not set"
+	  CPPFLAGS_FLTK2="" 
+	  BUILD_EDITOR="#BUILD_EDITOR is not set"
+	  CPPFLAGS_EDITOR=""
+          shift
+          ;;
+      --enable-ncurses | --with-ncurses )
+	  USE_NCURSES="USE_NCURSES = 1"
+	  CPPFLAGS_NCURSES="CPPFLAGS += -D '_USE_NCURSES_ = 1' " 
+          shift
+          ;;
+      --disable-ncurses | --without-ncurses )
+	  USE_NCURSES="#USE_NCURSES is not set"
+	  CPPFLAGS_NCURSES="" 
+          shift
+          ;;
+      --enable-editor )
+	  BUILD_EDITOR="BUILD_EDITOR = 1"
+	  CPPFLAGS_EDITOR="CPPFLAGS += -D '_BUILD_EDITOR_ = 1' " 
+          shift
+          ;;
+      --disable-editor )
+	  BUILD_EDITOR="#BUILD_EDITOR is not set"
+	  CPPFLAGS_EDITOR=""
+          shift
+
+          ;;
+      --install-dev )
+	  INSTALL_DEV="INSTALL_DEV = 1"
+	  shift
+	  ;;
+      --enable-static )
+	  STATIC="STATIC = 1"
+	  shift
+	  ;;
+      --enable-debug )
+	  DEBUG="yes"
+	  GCC_OPTIONS=$(echo $GCC_OPTIONS" -g")
+	  shift
+	  ;;
+      --enable-profiling )
+	  PROFILING="yes"
+
+	  GCC_OPTIONS=$(echo $GCC_OPTIONS" -pg")
+	  shift
+	  ;;
+      --help | -h | * )
+	  echo "--help | -h       : What you're reading at this very moment"
+	  echo ""
+	  echo "--prefix /prefix  : Set a specific location to install (default: /usr/local)"
+	  echo ""
+	  echo "--with-fltk2      : enable building FLTK2 (www.fltk.org) GUI (default: yes)"
+	  echo "--with-ncurses    : enable building Ncurses GUI (default: yes)"
+	  echo "--enable-editor   : enable building level editor (default: yes)"
+	  echo ""
+	  echo "--without-fltk2   : disable building FLTK2 GUI"
+	  echo "--without-ncurses : disable building Ncurses GUI"
+	  echo "--disable-editor  : disable building level editor"
+	  echo ""
+	  echo "--install-dev     : install headers static & shared libraries (default: no)"
+	  echo "--enable-static   : compile statically linked binaries (default: no)"
+	  echo "--enable-debug    : compile with debug symbols (default: no)"
+	  echo "--enable-profiling: compile with profiling support (default: no)"
+	  exit
+          ;;
+  esac
+done
+
+# Informing the user of what will be set
+echo "ngstar configuration :"
+echo "    prefix                    : $prefix"
+echo -n "    build editor              : "
+if [ "$BUILD_EDITOR" == "BUILD_EDITOR = 1" ] ; then
+    echo "yes"
+else
+    echo "no"
+fi
+echo -n "    build fltk2 gui           : "
+if [ "$USE_FLTK2" == "USE_FLTK2 = 1" ] ; then
+    echo "yes"
+else
+    echo "no"
+fi
+echo -n "    build ncurses gui         : "
+if [ "$USE_NCURSES" == "USE_NCURSES = 1" ] ; then
+    echo "yes"
+else
+    echo "no"
+fi
+echo -n "    install dev tools         : "
+if [ "$INSTALL_DEV" == "INSTALL_DEV = 1" ] ; then
+    echo "yes"
+else
+    echo "no"
+fi
+echo -n "    compile static binaries   : "
+if [ "$STATIC" == "STATIC = 1" ] ; then
+    echo "yes"
+else
+    echo "no"
+fi
+echo -n "    compile with debug symbols: "
+if [ "$DEBUG" == "yes" ] ; then
+    echo "yes"
+else
+    echo "no"
+fi
+echo -n "    compile with profiling    : "
+if [ "$PROFILING" == "yes" ] ; then
+    echo "yes"
+else
+    echo "no"
+fi
+
+# Write the config file
+echo "prefix ?= $prefix" > $USER_CONF
+echo $USE_FLTK2 >> $USER_CONF
+echo $USE_NCURSES >> $USER_CONF
+echo $BUILD_EDITOR >> $USER_CONF
+echo $INSTALL_DEV >> $USER_CONF
+echo $STATIC >> $USER_CONF
+echo $CPPFLAGS_FLTK2 >> $USER_CONF
+echo $CPPFLAGS_NCURSES >> $USER_CONF
+echo $CPPFLAGS_EDITOR >> $USER_CONF
+cat <<EOF >> $USER_CONF
+######## THERE IS NO SERVICABLE PARTS BELOW THIS LINE ########
+
+WD = \$(shell pwd)
+
+INSTALL = cp -d
+
+DESTIR=
+PREFIX ?= \$(DESTDIR)\$(prefix)
+
+CC = gcc $GCC_OPTIONS -Wall --pedantic-errors -Wstrict-prototypes
+CXX = g++ $GCC_OPTIONS -Wall --pedantic-errors
+AR=ar rcs
+
+CCOPTIMISATION += -O3 -funroll-loops -mtune=i686 -march=i486
+
+CPPFLAGS += -D 'APPLICATION_VERSION="\$(NAME) \$(MAJOR).\$(MINOR).\$(REVISION)"' -D 'LEVELSETS_PATH="\$(LEVELSETS_DIR)"'
+
+ifdef USE_FLTK2
+	CPPFLAGS += -D 'THEMES_PATH="\$(THEMES_DIR)"'
+else
+ifdef BUILD_EDITOR
+	CPPFLAGS += -D 'THEMES_PATH="\$(THEMES_DIR)"'
+endif
+endif
+
+NAME = ngstar
+MAJOR = $VMAJOR
+MINOR = $VMINOR
+REVISION = $VREVISION
+
+LEVELSETS_DIR = \$(PREFIX)/share/\$(NAME)/levelsets
+THEMES_DIR = \$(PREFIX)/share/\$(NAME)/themes
+BIN_DIR = \$(PREFIX)/bin
+DOC_DIR = \$(PREFIX)/doc/\$(NAME)-\$(MAJOR).\$(MINOR).\$(REVISION)
+LIB_DIR = \$(PREFIX)/lib
+INCLUDES_DIR = \$(PREFIX)/include/ngstar2
+
+.PHONY : clean real-clean install uninstall all archive archive_src archive_bin_dynamic archive_bin_static
+
+.cc.o:
+	echo Compiling \$<...
+	\$(CXX) -I.. \$(CPPFLAGS) -c \$<
+
+# Be quiet when building...
+.SILENT:
+
+EOF
+

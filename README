@@ -1,0 +1,124 @@
+NGStar by Cycojesus (cycojesus_AT_yahoo_DOT_fr)
+
+1/ Compilation & installation
+  1.1/ Configuration file
+2/ How to play
+3/ Level design
+4/ That's it
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1/ Compilation & installation
+-----------------------------
+
+To compile you'll need : a decent C++ compiler (tested with gcc 3.3.x and 3.4.x) and FLTK2
+(http://www.fltk.org) and/or Ncurses.
+
+Then :
+	./configure --help
+	./configure with the options you chose at the previous step
+	make
+	su (if you need it)
+	make install
+	(x)ngstar --help
+	(x)ngstar --create-default-config (optional but recommended, see below)
+
+	1.1/ Configuration file
+	-----------------------
+
+	From version 1.3.4beta2 you can configure ngstar from a configuration
+	file in your home directory : $HOME/.ngstar/config This file have the
+	following form (case sensitive !) :
+                LevelSetsPath = <path to levelsets>
+                ThemesPath = <path to themes>
+                LevelSet = <name of levelset>
+                Theme = <name of theme>
+		CurrentLevel = <number of level>
+
+	executing (x)ngstar with option -c (--create-default-config)will create
+	one with default values that you can't adjust later.
+
+2/ How to play
+--------------
+
+The goal is to catch all gifts in the level to get access to the next one.
+Use the ball to catch them, use the cube to stop the ball. The ball only
+move to the next obstacle (wall or cube).
+
+options are :
+(x)ngstar [options]
+        -v --version :
+                 show version
+        -h --help :
+                 what you are reading
+        -l<levelset> --levelset=<levelset> :
+                 use a different levelset (default: "default")
+        -t<theme> --theme=<theme> : (xngstar only)
+                 use a different theme (default: "default")
+        -w<n> --wrap=<n> :
+                 wrap to level n
+
+during the game keys are :
+	* 'space' to select the thing to move, ball or cube
+	* arrows to move
+	* 'n' to go to the next level
+	* 'p' to go to the previous level
+	* 'r' to restart the current level
+	* 'q' or Escape to quit the game
+	or you an use the mouse (or stylus on a pda)
+the ball can 'eat' the gifts (losanges), the cube 'eats' nothing but it
+will help you stopping the ball.
+
+3/ Level designing
+------------------
+
+Use xngstar-editor(_static) or if you really want to do it manually (for
+instance if you don't have fltk2 installed) see below :
+
+a level file is composed by 144 cells
+cell types:
+	W : wall
+	C : cube
+	B : ball
+	G : gift
+	' ' (space) : empty
+
+example:
+the level
+WWWWWWWWWWWWWWWW
+WWWGGGGGGGGGGWWW
+W  WW  B   WW  W
+W    WW  WW    W
+W              W
+W    WW  WW    W
+W  WW   C  WW  W
+WWW          WWW
+WWWWWWWWWWWWWWWW
+
+is stored like this in the file (no carriage return):
+WWWWWWWWWWWWWWWWWWWGGGGGGGGGGWWWW  WW  B   WW  WW    WW  WW    WW              WW    WW  WW    WW  WW   C  WW  WWWW          WWWWWWWWWWWWWWWWWWW
+
+levels are groupped in a levelset. A levelset is a directory containing level files
+named 1 2 3 .. n. Each file contain one level. Usermade levelsets are stored in $HOME/.ngstar/levelsets/
+You can play a specific levelset using the -l<levelset_name> or --levelset=<levelset_name> option or by modifying your config file or if playing with xngstar change from the combo box.
+
+You can also play gstar levels, just rename files to make a levelset
+
+4/ Theme design
+---------------
+A theme is made of a directory containing 7 (seven) 20x20pixels image files :
+tex_ball.png           : texture used for the ball
+tex_ball_selected.png  : texture used for the ball when selected
+tex_cube.png           : texture used for the cube
+tex_cube_selected.png  : texture used for the cube when selected
+tex_empty.png          : texture used for empty spaces
+tex_wall.png           : texture used for the walls
+tex_gift.png           : texture used for the little things you have to catch
+
+Usermade themes goes in $HOME/.ngstar/themes/<name of your theme>/
+You can use a specific theme using the -t<theme_name> or --theme=<theme_name> option or by modifying your config file.
+
+5/ That's it
+------------
+
+Nice game ;)

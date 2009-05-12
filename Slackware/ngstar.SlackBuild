@@ -1,0 +1,86 @@
+#!/bin/sh
+
+TMP=/tmp
+CWD=`pwd`
+PKG=$TMP/package-ngstar
+rm -rf $PKG
+mkdir -p $PKG
+
+VERSION=2.1.9
+ARCH=${ARCH:-i486}
+BUILD=1cyco
+
+# unpacking archive
+cd $TMP
+rm -rf ngstar-$VERSION
+tar xjvf $CWD/ngstar-$VERSION-src.tar.bz2
+cd ngstar-$VERSION
+chown -R root.root .
+
+# configuring
+./configure \
+--enable-ncurses \
+--enable-fltk2 \
+--enable-editor \
+--prefix /usr \
+# --install-dev \                        #<- intentionaly commented
+# --enable-static \                      #<- intentionaly commented
+
+# building
+make
+
+# installing to temporary directory
+make install DESTDIR=$PKG
+
+# tidy up permissions and ownership, installing documentation, stripping binaries
+chown -R root.bin $PKG/usr/bin
+mkdir -p mkdir -p $PKG/usr/doc/ngstar-$VERSION
+cp -a \
+  AUTHORS Changelog COPYING README TODO \
+  $PKG/usr/doc/ngstar-$VERSION
+chown -R root:root $PKG/usr/doc/ngstar-$VERSION/*
+chmod 0644 $PKG/usr/doc/ngstar-$VERSION/*
+chown root:bin $PGK/usr/bin/*
+chmod 0755 $PGK/usr/bin/*
+# chown root:bin $PGK/usr/lib/*         #<- uncomment if building with --install-dev
+# chmod 0755 $PGK/usr/lib/*             #<- uncomment if building with --install-dev
+# chmod 0644 $PKG/usr/include/ngstar/*  #<- uncomment if building with --install-dev
+chown -R root:root $PKG/usr/share
+for i in $PKG/usr/share/ngstar/levelsets/* ; do
+    chmod 0644 $i/* ;
+done
+for i in $PKG/usr/share/ngstar/themes/* ; do
+    chmod 0644 $i/* ;
+done
+
+strip -s $PKG/usr/bin/*
+
+# writing the two files that makes the future tgz a genuine slackware package
+mkdir -p $PKG/install
+cat <<EOF > $PKG/install/slack-desc
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+      |-----handy-ruler------------------------------------------------------|
+ngstar: ngstar (reflection/puzzle game)
+ngstar:
+ngstar:
+ngstar: The goal is to catch all gifts (<>) in the level to get access to the
+ngstar: next one. Use the ball (()) to catch them, use the cube ([]) to stop
+ngstar: the ball. The ball only move to the next obstacle (wall or cube).
+ngstar: It comes with ncurses UI (ngstar), fltk2 GUI (xngstar) and a fltk2
+ngstar: level editor (xngstar-editor).
+ngstar:
+ngstar: Please read /usr/doc/ngstar/README for more details.
+ngstar:
+EOF
+
+# building the package
+cd $PKG
+makepkg -l y -c n $TMP/ngstar-$VERSION-$ARCH-$BUILD.tgz
+
+# that's it ;)
