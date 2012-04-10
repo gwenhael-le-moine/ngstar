@@ -104,7 +104,7 @@ namespace ngstar2{
   void Scores::set( int level, int nbMoves, int nbSeconds )
   {
     //    int score = abs( nbMoves - nbSeconds );
-    double score = nbMoves * 100 + nbSeconds;
+    int score = nbMoves * nbSeconds;
     if ( ( score <= (this->scores)[ level - 1 ] ) ||
 				 ( (this->scores)[ level - 1 ] == -1) ) {
       (this->scores)[ level - 1 ] = (int) score;
