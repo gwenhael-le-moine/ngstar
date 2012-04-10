@@ -25,6 +25,7 @@
 
 /* includes */
 #include <ncurses.h>
+#include <unistd.h>
 
 #include "../libngstar2/NGStar2.hh"
 #include "../libngstar2/Configuration.hh"
